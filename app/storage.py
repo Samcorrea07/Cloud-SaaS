@@ -32,7 +32,13 @@ class S3Storage(Storage):
     def __init__(self) -> None:
         self.bucket = os.getenv("AWS_S3_BUCKET")
         self.region = os.getenv("AWS_REGION")
-        self.client = boto3.client("s3", region_name=self.region)
+        self.client = boto3.client(
+            "s3",
+            region_name=self.region,
+            aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID", None),
+            aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY", None),
+            aws_session_token=os.getenv("AWS_SESSION_TOKEN", None),
+        )
 
     def save(self, file: UploadFile) -> str:
         chave = f"{uuid.uuid4().hex}_{file.filename}"
